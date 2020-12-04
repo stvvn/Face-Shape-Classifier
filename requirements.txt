@@ -1,0 +1,6 @@
+flask
+wekzeug
+time
+numpy
+cv2
+keras
