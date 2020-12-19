@@ -1,6 +1,5 @@
 flask
-wekzeug
-time
+werkzeug
 numpy
 cv2
 keras
