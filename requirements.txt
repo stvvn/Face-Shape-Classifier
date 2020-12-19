@@ -1,5 +1,5 @@
 flask==1.1.2
 werkzeug==1.0.1
 numpy==1.18.5
-cv2==4.4.0.44
+opencv-python-headless
 keras==2.4.3
