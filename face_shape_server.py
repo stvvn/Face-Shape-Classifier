@@ -3,6 +3,7 @@ import werkzeug
 import time
 import numpy as np
 import cv2
+import os
 from keras import models
 from keras.preprocessing import image
 
@@ -103,7 +104,7 @@ def predict_age_gender(frame, padding=20):
         agePreds = ageNet.forward()
         age = ageList[agePreds[0].argmax()]
 
-        prediction = f"\nGender: {gender}\nEstimated Age: {age}"
+        prediction = f"{gender}, {age}"
 
     return resultImg, prediction
 
@@ -113,7 +114,6 @@ def handle_request():
 
     files_ids = list(flask.request.files)
     image_num = 1
-    predicted_face_shape = "NO FACE"
     confidence = 1_000_000_000_0000
 
     for file_id in files_ids:
@@ -130,57 +130,20 @@ def handle_request():
         result_img, predicted_age_gender = predict_age_gender(input_img)
 
         if predicted_age_gender == None:
-            predicted_age_gender = "\nNo face detected"
-            predictions = predicted_age_gender
+            predictions = "NO FACE"
         else:
-            #predictions = str(predicted_face_shape + "\nConfidence Level: " + str(confidence) + "%" )
-            predictions = str(predicted_face_shape)
-            predictions += predicted_age_gender
+            predictions = predicted_face_shape
+            predictions += "," + predicted_age_gender
 
 
         if image_num > 1:
             break
 
+    print("\nReturning: " + predictions)
     return predictions
 
-app.run(host="0.0.0.0", port=5000, debug=True)
+app.run(debug=True, host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
 
-
-'''
-if __name__ == '__main__':
-    # Put location of the file path
-    model_path = "faceshapeone_vgg16_augment.h5"
-
-    filenames = ["round_" + str(i) + ".jpg" for i in range(1, 4)]
-    print("Testing Round Face:")
-    for filename in filenames:
-        predicted_face_shape = predict_face_shape(filename, model_path)
-        print("Predicted Face Shape: " + predicted_face_shape)
-
-    filenames = ["heart_" + str(i) + ".jpg" for i in range(1, 4)]
-    print("Testing Heart Face:")
-    for filename in filenames:
-        predicted_face_shape = predict_face_shape(filename, model_path)
-        print("Predicted Face Shape: " + predicted_face_shape)
-
-    filenames = ["oblong_" + str(i) + ".jpg" for i in range(1, 4)]
-    print("Testing Oblong Face:")
-    for filename in filenames:
-        predicted_face_shape = predict_face_shape(filename, model_path)
-        print("Predicted Face Shape: " + predicted_face_shape)
-
-    filenames = ["square_" + str(i) + ".jpg" for i in range(1, 4)]
-    print("Testing square Face:")
-    for filename in filenames:
-        predicted_face_shape = predict_face_shape(filename, model_path)
-        print("Predicted Face Shape: " + predicted_face_shape)
-
-    filenames = ["oval_" + str(i) + ".jpg" for i in range(1, 4)]
-    print("Testing oval Face:")
-    for filename in filenames:
-        predicted_face_shape = predict_face_shape(filename, model_path)
-        print("Predicted Face Shape: " + predicted_face_shape)
-'''
 
 
 
