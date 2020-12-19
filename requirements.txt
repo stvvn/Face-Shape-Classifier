@@ -3,3 +3,4 @@ werkzeug==1.0.1
 numpy==1.18.5
 opencv-python-headless
 keras==2.4.3
+tensorflow
